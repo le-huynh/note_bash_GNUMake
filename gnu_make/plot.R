@@ -4,9 +4,10 @@ library(tidyverse)
 library(glue)
 
 args <- commandArgs(trailingOnly = TRUE)
-selected_cyl <- args[1]
+variable <- args[1]
+selected_value <- as.numeric(args[2])
 
-(data <- rio::import(glue(here(), "/gnu_make/processed_cyl_{selected_cyl}.csv")) %>% 
+(data <- rio::import(glue(here(), "/gnu_make/processed_{variable}_{selected_value}.csv")) %>% 
         tibble())
 
 fig <- data %>% 
@@ -14,7 +15,7 @@ fig <- data %>%
     geom_point() +
     theme_bw()
 
-lehuynh::ggsave_elsevier(glue(here(), "/gnu_make/plot_cyl_{selected_cyl}.png"),
+lehuynh::ggsave_elsevier(glue(here(), "/gnu_make/plot_{variable}_{selected_value}.png"),
                          fig,
                          width = "one_column",
                          height = 240/3)

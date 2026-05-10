@@ -27,19 +27,34 @@
 #############################################
 
 # keep the intermediate files
-.PRECIOUS: gnu_make/processed_cyl_%.csv
+.SECONDARY:
 
-# multi-parameter pipeline
-CYLS = 4 6 8
-all: $(CYLS:%=gnu_make/plot_cyl_%.png)
+# Files
+DATA = gnu_make/data_mtcars.csv
+PROC = gnu_make/processed_$(VAR)_$(VALUE).csv
+PLOT = gnu_make/plot_$(VAR)_$(VALUE).png
 
-gnu_make/processed_cyl_%.csv:\
+# Wrapper target to generate both processed data and plot
+.PHONY : test_target1
+test_target1 : $(PROC) $(PLOT)
+
+# Step 1: create processed data
+$(PROC):\
 gnu_make/get_wdata.R\
-gnu_make/data_mtcars.csv
-	Rscript gnu_make/get_wdata.R $*
+$(DATA)
+	Rscript gnu_make/get_wdata.R $(VAR) $(VALUE)
 
-gnu_make/plot_cyl_%.png:\
+# Step 2: create plot
+$(PLOT):\
 gnu_make/plot.R\
-gnu_make/processed_cyl_%.csv
-	Rscript gnu_make/plot.R $*
+$(PROC)
+	Rscript gnu_make/plot.R $(VAR) $(VALUE)
 
+# Remove generated files
+clean:
+	rm -f gnu_make/processed_*.csv
+	rm -f gnu_make/plot_*.png
+
+# run in terminal
+# make test_target1 VAR=cyl VALUE=6
+# make test_target1 VAR=gear VALUE=5
