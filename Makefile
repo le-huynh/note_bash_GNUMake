@@ -38,11 +38,13 @@ PLOT = gnu_make/plot_$(VAR)_$(VALUE).png
 .PHONY : test_target1
 test_target1 : $(PROC) $(PLOT)
 
+VALUE1="Well done!"
+
 # Step 1: create processed data
 $(PROC):\
 gnu_make/get_wdata.R\
 $(DATA)
-	Rscript gnu_make/get_wdata.R $(VAR) $(VALUE)
+	Rscript gnu_make/get_wdata.R $(VAR) $(VALUE) $(VALUE1)
 
 # Step 2: create plot
 $(PLOT):\
@@ -58,3 +60,5 @@ clean:
 # run in terminal
 # make test_target1 VAR=cyl VALUE=6
 # make test_target1 VAR=gear VALUE=5
+# make test_target1 VAR=gear VALUE=5 VALUE1="Happy!"
+
